@@ -5,6 +5,7 @@ import clsx from "clsx";
 import EmptyState from "../../components/EmptyState";
 import ErrorState from "../../components/ErrorState";
 import InboxFilters from "../../components/admin/InboxFilters";
+import InboxStats from "../../components/admin/InboxStats";
 import InboxRow, { InboxRowSkeleton } from "../../components/admin/InboxRow";
 import TicketDetail from "../../components/admin/TicketDetail";
 import { useAuth } from "../../hooks/useAuth";
@@ -152,50 +153,56 @@ export default function Inbox() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1">
-      <section
-        aria-labelledby="inbox-heading"
-        className={clsx(
-          "min-h-0 w-full flex-col border-slate-200 bg-white lg:w-[380px] lg:shrink-0 lg:border-r",
-          ticketId ? "hidden lg:flex" : "flex",
-        )}
-      >
-        <h1 id="inbox-heading" className="sr-only">
-          Inbox
-        </h1>
-        <InboxFilters
-          filters={filters}
-          counts={counts}
-          staff={staff}
-          currentUid={uid}
-          onChange={setFilter}
-          onSearch={setSearch}
-          activeCount={activeCount}
-        />
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-          <TicketList
-            inbox={inbox}
-            tickets={visible}
+    <div className="flex min-h-0 flex-1 flex-col">
+      {/* On phones the open ticket gets the whole screen, so the summary shows with the list only. */}
+      <div className={ticketId ? "hidden lg:block" : undefined}>
+        <InboxStats tickets={inbox.tickets} />
+      </div>
+      <div className="flex min-h-0 flex-1">
+        <section
+          aria-labelledby="inbox-heading"
+          className={clsx(
+            "min-h-0 w-full flex-col border-slate-200 bg-white lg:w-[380px] lg:shrink-0 lg:border-r",
+            ticketId ? "hidden lg:flex" : "flex",
+          )}
+        >
+          <h1 id="inbox-heading" className="sr-only">
+            Inbox
+          </h1>
+          <InboxFilters
             filters={filters}
-            selectedId={ticketId}
-            search={search}
-            onClear={clearFilters}
+            counts={counts}
+            staff={staff}
+            currentUid={uid}
+            onChange={setFilter}
+            onSearch={setSearch}
+            activeCount={activeCount}
           />
-        </div>
-      </section>
-
-      <div className={clsx("min-h-0 min-w-0 flex-1", ticketId ? "flex" : "hidden lg:flex")}>
-        {ticketId ? (
-          <TicketDetail key={ticketId} ticketId={ticketId} backTo={`/admin/inbox${search}`} />
-        ) : (
-          <div className="flex flex-1 items-center justify-center p-6">
-            <EmptyState
-              icon={MousePointerClick}
-              title="Select a ticket"
-              message="Pick a ticket from the list to read the conversation and reply."
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+            <TicketList
+              inbox={inbox}
+              tickets={visible}
+              filters={filters}
+              selectedId={ticketId}
+              search={search}
+              onClear={clearFilters}
             />
           </div>
-        )}
+        </section>
+
+        <div className={clsx("min-h-0 min-w-0 flex-1", ticketId ? "flex" : "hidden lg:flex")}>
+          {ticketId ? (
+            <TicketDetail key={ticketId} ticketId={ticketId} backTo={`/admin/inbox${search}`} />
+          ) : (
+            <div className="flex flex-1 items-center justify-center p-6">
+              <EmptyState
+                icon={MousePointerClick}
+                title="Select a ticket"
+                message="Pick a ticket from the list to read the conversation and reply."
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

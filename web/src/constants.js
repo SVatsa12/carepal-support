@@ -103,6 +103,14 @@ export const SLA_MINUTES = {
   BREACH: 60,
 };
 
+// How each SLA level looks on the staff wait timer. The label is read out, so colour is never
+// the only signal.
+export const SLA_LEVELS = {
+  ok: { label: "within SLA", classes: "bg-emerald-50 text-emerald-800 ring-emerald-200" },
+  warn: { label: "SLA at risk", classes: "bg-amber-50 text-amber-800 ring-amber-300" },
+  breach: { label: "SLA breached", classes: "bg-red-50 text-red-700 ring-red-200" },
+};
+
 export const MAX_UPLOAD_MB = 5;
 export const MESSAGE_MAX = 2000;
 export const PREVIEW_MAX = 120;

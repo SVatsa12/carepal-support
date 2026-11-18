@@ -9,6 +9,7 @@ import ErrorState from "../ErrorState";
 import Skeleton from "../Skeleton";
 import Conversation from "../chat/Conversation";
 import StatusBadge from "../tickets/StatusBadge";
+import WaitTimer from "../WaitTimer";
 import { useAuth } from "../../hooks/useAuth";
 import { useMarkRead } from "../../hooks/useMarkRead";
 import { useMemberProfile } from "../../hooks/useMemberProfile";
@@ -36,10 +37,13 @@ function DetailHeader({ ticket, backTo, actor }) {
           >
             {ticket.subject}
           </h1>
-          <p className="truncate text-xs text-slate-500">
-            {ticket.ticketNo} · {memberDetails.join(" · ")} · created{" "}
-            {formatRelative(ticket.createdAt, now)}
-          </p>
+          <div className="flex min-w-0 items-center gap-2">
+            <WaitTimer ticket={ticket} className="shrink-0" />
+            <p className="truncate text-xs text-slate-500">
+              {ticket.ticketNo} · {memberDetails.join(" · ")} · created{" "}
+              {formatRelative(ticket.createdAt, now)}
+            </p>
+          </div>
         </div>
         <div className="flex shrink-0 items-center gap-1 sm:hidden">
           <StatusBadge status={ticket.status} />

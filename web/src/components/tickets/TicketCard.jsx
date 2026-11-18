@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import CategoryIcon from "./CategoryIcon";
-import MemberWaitLine from "./MemberWaitLine";
 import PriorityPill from "./PriorityPill";
 import StatusBadge from "./StatusBadge";
 import UnreadBadge from "../UnreadBadge";
+import WaitTimer from "../WaitTimer";
 import Skeleton from "../Skeleton";
 import { useNow } from "../../hooks/useNow";
 import { formatRelative, toDate } from "../../utils/time";
@@ -47,7 +47,7 @@ export default function TicketCard({ ticket }) {
           </p>
 
           <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-            <MemberWaitLine ticket={ticket} />
+            <WaitTimer ticket={ticket} variant="member" />
             <time
               dateTime={toDate(ticket.lastMessageAt)?.toISOString()}
               className="ml-auto text-xs text-slate-500"

@@ -77,3 +77,33 @@ export function slaLevel(ms) {
   if (ms < SLA_MINUTES.BREACH * MINUTE) return "warn";
   return "breach";
 }
+
+function plural(count, unit) {
+  return `${count} ${unit}${count === 1 ? "" : "s"}`;
+}
+
+/** Spoken wait for screen readers: "1 hour 12 minutes", "2 days 3 hours", "less than a minute". */
+export function formatWaitLong(ms) {
+  const safe = Math.max(0, ms);
+  if (safe < MINUTE) return "less than a minute";
+  if (safe < HOUR) return plural(Math.floor(safe / MINUTE), "minute");
+  if (safe < DAY) {
+    const hours = Math.floor(safe / HOUR);
+    const minutes = Math.floor((safe % HOUR) / MINUTE);
+    return minutes
+      ? `${plural(hours, "hour")} ${plural(minutes, "minute")}`
+      : plural(hours, "hour");
+  }
+  const days = Math.floor(safe / DAY);
+  const hours = Math.floor((safe % DAY) / HOUR);
+  return hours ? `${plural(days, "day")} ${plural(hours, "hour")}` : plural(days, "day");
+}
+
+/**
+ * Milliseconds from `value` to `now`. A missing value (e.g. a serverTimestamp() still pending)
+ * counts as "just now", so a brand-new wait shows 0 instead of nothing.
+ */
+export function msSince(value, now) {
+  const date = toDate(value);
+  return date ? Math.max(0, now - date.getTime()) : 0;
+}

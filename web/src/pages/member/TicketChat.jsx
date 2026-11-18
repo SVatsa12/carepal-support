@@ -7,6 +7,7 @@ import ErrorState from "../../components/ErrorState";
 import Skeleton from "../../components/Skeleton";
 import Conversation from "../../components/chat/Conversation";
 import StatusBadge from "../../components/tickets/StatusBadge";
+import WaitTimer from "../../components/WaitTimer";
 import { useAuth } from "../../hooks/useAuth";
 import { useMarkRead } from "../../hooks/useMarkRead";
 import { useTicket } from "../../hooks/useTicket";
@@ -94,9 +95,12 @@ export default function TicketChat() {
     <div className="mx-auto flex h-dvh w-full max-w-2xl flex-col bg-slate-50 sm:border-x sm:border-slate-200">
       <header className="flex min-h-16 shrink-0 items-center gap-2 border-b border-slate-200 bg-white px-3 pt-[env(safe-area-inset-top)]">
         <BackLink to="/app/tickets" label="My tickets" iconOnly />
-        <h1 className="min-w-0 flex-1 truncate text-base font-semibold text-slate-900">
-          {ticket?.subject ?? "Ticket"}
-        </h1>
+        <div className="min-w-0 flex-1">
+          <h1 className="truncate text-base font-semibold text-slate-900">
+            {ticket?.subject ?? "Ticket"}
+          </h1>
+          {ticket && <WaitTimer ticket={ticket} variant="member" />}
+        </div>
         {ticket && <StatusBadge status={ticket.status} />}
       </header>
       {content}

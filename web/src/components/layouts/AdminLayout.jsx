@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { Inbox, LogOut, MessageSquareText } from "lucide-react";
 import clsx from "clsx";
@@ -7,7 +7,8 @@ import { Spinner } from "../Spinner";
 import UnreadBadge from "../UnreadBadge";
 import { useInboxTickets } from "../../hooks/useInboxTickets";
 import { useAuth } from "../../hooks/useAuth";
-import { APP_NAME, ROLE_LABELS } from "../../constants";
+import { ROLE_LABELS } from "../../constants";
+import { useUnreadTitle } from "../../hooks/useUnreadTitle";
 
 function NavItem({ to, icon: Icon, label, badge }) {
   return (
@@ -45,12 +46,7 @@ export default function AdminLayout() {
     [inbox.tickets],
   );
 
-  useEffect(() => {
-    document.title = unreadTotal > 0 ? `(${unreadTotal}) ${APP_NAME}` : APP_NAME;
-    return () => {
-      document.title = APP_NAME;
-    };
-  }, [unreadTotal]);
+  useUnreadTitle(unreadTotal);
 
   return (
     // Fixed-height column: the header stays put and each page fills exactly the rest, so the

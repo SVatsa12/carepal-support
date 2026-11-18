@@ -1,11 +1,9 @@
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useOutletContext, useSearchParams } from "react-router-dom";
 import { CheckCircle2, Plus, TicketCheck } from "lucide-react";
 import clsx from "clsx";
 import EmptyState from "../../components/EmptyState";
 import ErrorState from "../../components/ErrorState";
 import TicketCard, { TicketCardSkeleton } from "../../components/tickets/TicketCard";
-import { useAuth } from "../../hooks/useAuth";
-import { useMyTickets } from "../../hooks/useMyTickets";
 import { isOpenStatus } from "../../utils/tickets";
 
 const VIEWS = [
@@ -96,8 +94,8 @@ function TicketList({ loading, error, retry, tickets, view }) {
 }
 
 export default function MyTickets() {
-  const { firebaseUser } = useAuth();
-  const { tickets, loading, error, retry } = useMyTickets(firebaseUser?.uid);
+  // The live list comes from MemberDataLayout, which also feeds the unread badge.
+  const { tickets, loading, error, retry } = useOutletContext();
   const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get("view") === "resolved" ? "resolved" : "open";
 

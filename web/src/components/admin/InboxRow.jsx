@@ -5,6 +5,7 @@ import CategoryIcon from "../tickets/CategoryIcon";
 import PriorityPill from "../tickets/PriorityPill";
 import StatusBadge from "../tickets/StatusBadge";
 import UnreadBadge from "../UnreadBadge";
+import WaitTimer from "../WaitTimer";
 import Skeleton from "../Skeleton";
 import { formatRelative } from "../../utils/time";
 
@@ -52,6 +53,7 @@ export default function InboxRow({ ticket, selected, search, showStatus, now }) 
             <PriorityPill priority={ticket.priority} />
             {showStatus && <StatusBadge status={ticket.status} />}
             <AssigneeAvatar name={ticket.assigneeName} />
+            <WaitTimer ticket={ticket} />
             <UnreadBadge count={ticket.unreadStaff} className="ml-auto" />
           </div>
         </div>
