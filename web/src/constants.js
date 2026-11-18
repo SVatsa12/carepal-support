@@ -42,10 +42,30 @@ export const CATEGORIES = [
 ];
 
 export const PRIORITIES = [
-  { value: "low", label: "Low", classes: "bg-slate-100 text-slate-700 ring-slate-200" },
-  { value: "medium", label: "Medium", classes: "bg-sky-50 text-sky-700 ring-sky-200" },
-  { value: "high", label: "High", classes: "bg-amber-50 text-amber-800 ring-amber-200" },
-  { value: "urgent", label: "Urgent", classes: "bg-red-50 text-red-700 ring-red-200" },
+  {
+    value: "low",
+    label: "Low",
+    hint: "Low — a question or something that can wait a few days.",
+    classes: "bg-slate-100 text-slate-700 ring-slate-200",
+  },
+  {
+    value: "medium",
+    label: "Medium",
+    hint: "Medium — needs attention within a day or so.",
+    classes: "bg-sky-50 text-sky-700 ring-sky-200",
+  },
+  {
+    value: "high",
+    label: "High",
+    hint: "High — it's affecting care this week.",
+    classes: "bg-amber-50 text-amber-800 ring-amber-200",
+  },
+  {
+    value: "urgent",
+    label: "Urgent",
+    hint: "Urgent — someone's safety or today's visit is affected.",
+    classes: "bg-red-50 text-red-700 ring-red-200",
+  },
 ];
 
 export const STATUSES = [
@@ -85,3 +105,15 @@ export const SLA_MINUTES = {
 
 export const MAX_UPLOAD_MB = 5;
 export const MESSAGE_MAX = 2000;
+export const PREVIEW_MAX = 120;
+
+// Must match firestore.rules.
+export const TICKET_LIMITS = {
+  SUBJECT_MIN: 5,
+  SUBJECT_MAX: 120,
+  DESCRIPTION_MIN: 10,
+  DESCRIPTION_MAX: 2000,
+};
+
+// Typical first-reply time quoted to families after they raise a ticket.
+export const TYPICAL_REPLY_MINUTES = 15;
