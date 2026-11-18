@@ -1,0 +1,29 @@
+# Dependencies and builds
+node_modules
+dist
+*.log
+
+# Secrets: env files and service accounts (only .env.example is committed)
+.env
+.env.*
+!.env.example
+serviceAccount*.json
+*-service-account.json
+service-account.json
+
+# Firebase CLI local state
+.firebase/
+firebase-debug*.log
+firestore-debug.log
+
+# Editors / OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Assignment prompts (not part of the submission)
+prompt.md
+
+# Claude Code local state
+.claude/
