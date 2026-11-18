@@ -15,7 +15,7 @@ import { useTicket } from "../../hooks/useTicket";
 import { TYPICAL_REPLY_MINUTES } from "../../constants";
 
 const NEW_TICKET_LINK =
-  "inline-flex min-h-11 items-center justify-center rounded-xl bg-brand-600 px-4 text-sm font-medium text-white hover:bg-brand-700";
+  "inline-flex min-h-11 items-center justify-center rounded-xl bg-brand-700 px-4 text-sm font-medium text-white hover:bg-brand-800";
 
 /** Replaces the composer on a resolved ticket: the rating card plus a way to get more help. */
 function ResolvedNotice({ ticket }) {

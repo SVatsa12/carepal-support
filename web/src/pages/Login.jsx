@@ -67,6 +67,7 @@ export default function Login() {
   const busy = Boolean(pendingAction);
 
   async function attemptSignIn(action, signInEmail, signInPassword) {
+    if (busy) return;
     setFormError("");
     setPendingAction(action);
     try {
@@ -111,7 +112,7 @@ export default function Login() {
                 type="button"
                 disabled={busy || !demoConfigured || !demoEmail}
                 onClick={() => attemptSignIn(id, demoEmail, DEMO_PASSWORD)}
-                className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 text-sm font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 text-sm font-semibold text-white hover:bg-brand-800 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {pendingAction === id ? (
                   <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
@@ -128,7 +129,7 @@ export default function Login() {
             </p>
           </div>
 
-          <div className="my-5 flex items-center gap-3 text-xs uppercase tracking-wide text-slate-400">
+          <div className="my-5 flex items-center gap-3 text-xs uppercase tracking-wide text-slate-500">
             <span className="h-px flex-1 bg-slate-200" />
             or sign in with email
             <span className="h-px flex-1 bg-slate-200" />

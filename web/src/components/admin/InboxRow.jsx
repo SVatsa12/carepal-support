@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import AssigneeAvatar from "./AssigneeAvatar";
@@ -6,11 +7,14 @@ import PriorityPill from "../tickets/PriorityPill";
 import StatusBadge from "../tickets/StatusBadge";
 import UnreadBadge from "../UnreadBadge";
 import WaitTimer from "../WaitTimer";
+import RelativeTime from "../RelativeTime";
 import Skeleton from "../Skeleton";
-import { formatRelative } from "../../utils/time";
 
-/** One ticket in the staff inbox. `search` keeps the current filters in the link. */
-export default function InboxRow({ ticket, selected, search, showStatus, now }) {
+/**
+ * One ticket in the staff inbox. `search` keeps the current filters in the link. Memoised: the
+ * clock tick only re-renders its timers, not the whole list.
+ */
+const InboxRow = memo(function InboxRow({ ticket, selected, search, showStatus }) {
   const unread = ticket.unreadStaff > 0;
 
   return (
@@ -36,9 +40,10 @@ export default function InboxRow({ ticket, selected, search, showStatus, now }) 
             >
               {ticket.memberName}
             </p>
-            <span className="shrink-0 text-xs text-slate-500">
-              {formatRelative(ticket.lastMessageAt, now)}
-            </span>
+            <RelativeTime
+              value={ticket.lastMessageAt}
+              className="shrink-0 text-xs text-slate-500"
+            />
           </div>
           <p
             className={clsx(
@@ -60,7 +65,9 @@ export default function InboxRow({ ticket, selected, search, showStatus, now }) 
       </div>
     </Link>
   );
-}
+});
+
+export default InboxRow;
 
 export function InboxRowSkeleton() {
   return (

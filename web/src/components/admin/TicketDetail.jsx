@@ -8,6 +8,7 @@ import BackLink from "../BackLink";
 import EmptyState from "../EmptyState";
 import ErrorState from "../ErrorState";
 import Skeleton from "../Skeleton";
+import RelativeTime from "../RelativeTime";
 import Conversation from "../chat/Conversation";
 import StarRating from "../tickets/StarRating";
 import StatusBadge from "../tickets/StatusBadge";
@@ -15,12 +16,9 @@ import WaitTimer from "../WaitTimer";
 import { useAuth } from "../../hooks/useAuth";
 import { useMarkRead } from "../../hooks/useMarkRead";
 import { useMemberProfile } from "../../hooks/useMemberProfile";
-import { useNow } from "../../hooks/useNow";
 import { useTicket } from "../../hooks/useTicket";
-import { formatRelative } from "../../utils/time";
 
 function DetailHeader({ ticket, backTo, actor }) {
-  const now = useNow();
   const member = useMemberProfile(ticket.memberId);
   const memberDetails = [ticket.memberName, member?.city, member?.careType].filter(Boolean);
   // Phones get the controls behind a toggle so the conversation keeps most of the screen.
@@ -42,8 +40,8 @@ function DetailHeader({ ticket, backTo, actor }) {
           <div className="flex min-w-0 items-center gap-2">
             <WaitTimer ticket={ticket} className="shrink-0" />
             <p className="truncate text-xs text-slate-500">
-              {ticket.ticketNo} · {memberDetails.join(" · ")} · created{" "}
-              {formatRelative(ticket.createdAt, now)}
+              {ticket.ticketNo} · {memberDetails.join(" · ")} ·{" "}
+              <RelativeTime value={ticket.createdAt} prefix="created " />
             </p>
           </div>
           {ticket.rating && (
@@ -111,7 +109,7 @@ export default function TicketDetail({ ticketId, backTo }) {
           action={
             <Link
               to={backTo}
-              className="inline-flex min-h-11 items-center rounded-xl bg-brand-600 px-4 text-sm font-medium text-white hover:bg-brand-700"
+              className="inline-flex min-h-11 items-center rounded-xl bg-brand-700 px-4 text-sm font-medium text-white hover:bg-brand-800"
             >
               Back to inbox
             </Link>

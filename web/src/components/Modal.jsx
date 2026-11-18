@@ -1,20 +1,24 @@
 import { useEffect, useId, useRef } from "react";
 import { X } from "lucide-react";
+import { trapTabKey } from "../utils/focusTrap";
 
 /**
  * Accessible dialog: bottom sheet on phones, centred card from sm up. Escape, the close button
- * and a backdrop click call `onClose`; focus moves into the dialog and returns afterwards.
- * `initialFocusRef` picks the element focused on open (defaults to the close button).
+ * and a backdrop click call `onClose`; Tab stays inside the dialog; focus moves in on open and
+ * returns afterwards. `initialFocusRef` picks the element focused on open (defaults to the
+ * close button).
  */
 export default function Modal({ title, onClose, children, footer, initialFocusRef }) {
   const titleId = useId();
   const closeRef = useRef(null);
+  const dialogRef = useRef(null);
 
   useEffect(() => {
     const previouslyFocused = document.activeElement;
     (initialFocusRef?.current ?? closeRef.current)?.focus();
     const onKeyDown = (event) => {
       if (event.key === "Escape") onClose();
+      else trapTabKey(event, dialogRef.current);
     };
     document.addEventListener("keydown", onKeyDown);
     const { overflow } = document.body.style;
@@ -34,6 +38,7 @@ export default function Modal({ title, onClose, children, footer, initialFocusRe
       }}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}

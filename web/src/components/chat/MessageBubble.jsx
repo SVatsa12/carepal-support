@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Clock } from "lucide-react";
 import clsx from "clsx";
 import { formatClock, toDate } from "../../utils/time";
@@ -12,7 +13,7 @@ function senderLabel(message) {
  * One chat message. `own` puts it on the right in the brand colour.
  * `showSender` adds the name line (used for the other side, and for colleagues on staff view).
  */
-export default function MessageBubble({ message, own, showSender }) {
+const MessageBubble = memo(function MessageBubble({ message, own, showSender }) {
   const date = toDate(message.createdAt);
 
   return (
@@ -21,7 +22,7 @@ export default function MessageBubble({ message, own, showSender }) {
         className={clsx(
           "max-w-[85%] rounded-2xl px-3.5 py-2 shadow-sm sm:max-w-[75%]",
           own
-            ? "rounded-br-md bg-brand-600 text-white"
+            ? "rounded-br-md bg-brand-700 text-white"
             : "rounded-bl-md border border-slate-200 bg-white text-slate-900",
         )}
       >
@@ -55,4 +56,6 @@ export default function MessageBubble({ message, own, showSender }) {
       </div>
     </div>
   );
-}
+});
+
+export default MessageBubble;

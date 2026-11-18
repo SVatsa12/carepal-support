@@ -3,6 +3,8 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./context/AuthContext";
 import { NowProvider } from "./context/NowContext";
+import ErrorBoundary from "./components/ErrorBoundary";
+import OfflineBanner from "./components/OfflineBanner";
 import { ROLES, STAFF_ROLES } from "./constants";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import HomeRedirect from "./routes/HomeRedirect";
@@ -23,49 +25,52 @@ const MEMBER_ONLY = [ROLES.MEMBER];
 
 export default function App() {
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <AuthProvider>
-        <NowProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<HomeRedirect />} />
+    <ErrorBoundary>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <AuthProvider>
+          <NowProvider>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<HomeRedirect />} />
 
-            <Route
-              path="/app"
-              element={
-                <ProtectedRoute allow={MEMBER_ONLY}>
-                  <MemberDataLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route element={<MemberLayout />}>
-                <Route index element={<Navigate to="tickets" replace />} />
-                <Route path="tickets" element={<MyTickets />} />
-                <Route path="tickets/new" element={<NewTicket />} />
+              <Route
+                path="/app"
+                element={
+                  <ProtectedRoute allow={MEMBER_ONLY}>
+                    <MemberDataLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route element={<MemberLayout />}>
+                  <Route index element={<Navigate to="tickets" replace />} />
+                  <Route path="tickets" element={<MyTickets />} />
+                  <Route path="tickets/new" element={<NewTicket />} />
+                </Route>
+                {/* The chat is full-height with its own header, so it sits outside MemberLayout. */}
+                <Route path="tickets/:ticketId" element={<TicketChat />} />
               </Route>
-              {/* The chat is full-height with its own header, so it sits outside MemberLayout. */}
-              <Route path="tickets/:ticketId" element={<TicketChat />} />
-            </Route>
 
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute allow={STAFF_ROLES}>
-                  <AdminLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<Navigate to="inbox" replace />} />
-              <Route path="inbox" element={<Inbox />} />
-              <Route path="inbox/:ticketId" element={<Inbox />} />
-              <Route path="quick-replies" element={<QuickReplies />} />
-            </Route>
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute allow={STAFF_ROLES}>
+                    <AdminLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Navigate to="inbox" replace />} />
+                <Route path="inbox" element={<Inbox />} />
+                <Route path="inbox/:ticketId" element={<Inbox />} />
+                <Route path="quick-replies" element={<QuickReplies />} />
+              </Route>
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </NowProvider>
-        <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
-      </AuthProvider>
-    </BrowserRouter>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </NowProvider>
+          <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
+        </AuthProvider>
+        <OfflineBanner />
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

@@ -20,6 +20,12 @@ function groupByDay(messages) {
   return groups;
 }
 
+/** Day divider ("Today", "Yesterday", "Mon 3 Nov"); the only part of the thread on the clock. */
+function DayLabel({ date }) {
+  const now = useNow();
+  return <span className="text-xs font-medium text-slate-500">{dayLabel(date, now)}</span>;
+}
+
 function ThreadSkeleton() {
   return (
     <div aria-busy="true" aria-label="Loading messages" className="space-y-4 p-4">
@@ -49,7 +55,6 @@ export default function ChatThread({
   emptyText,
   header,
 }) {
-  const now = useNow();
   const scrollRef = useRef(null);
   const nearBottomRef = useRef(true);
   const initialScrollDone = useRef(false);
@@ -119,9 +124,7 @@ export default function ChatThread({
           <li key={group.key} className="space-y-3">
             <div className="flex items-center gap-3 py-1" role="separator">
               <span className="h-px flex-1 bg-slate-200" />
-              <span className="text-xs font-medium text-slate-500">
-                {dayLabel(group.date, now)}
-              </span>
+              <DayLabel date={group.date} />
               <span className="h-px flex-1 bg-slate-200" />
             </div>
             <ol className="space-y-2">

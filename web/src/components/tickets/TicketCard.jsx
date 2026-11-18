@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
 import CategoryIcon from "./CategoryIcon";
@@ -5,13 +6,14 @@ import PriorityPill from "./PriorityPill";
 import StatusBadge from "./StatusBadge";
 import UnreadBadge from "../UnreadBadge";
 import WaitTimer from "../WaitTimer";
+import RelativeTime from "../RelativeTime";
 import Skeleton from "../Skeleton";
-import { useNow } from "../../hooks/useNow";
-import { formatRelative, toDate } from "../../utils/time";
 
-/** One ticket in the member's list; the whole card links to the chat. */
-export default function TicketCard({ ticket }) {
-  const now = useNow();
+/**
+ * One ticket in the member's list; the whole card links to the chat. Memoised: the clock tick
+ * only re-renders its timers.
+ */
+const TicketCard = memo(function TicketCard({ ticket }) {
   const hasUnread = ticket.unreadMember > 0;
   const speaker = ticket.lastMessageRole === "member" ? "You" : "CarePal";
 
@@ -56,18 +58,15 @@ export default function TicketCard({ ticket }) {
 
           <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
             <WaitTimer ticket={ticket} variant="member" />
-            <time
-              dateTime={toDate(ticket.lastMessageAt)?.toISOString()}
-              className="ml-auto text-xs text-slate-500"
-            >
-              {formatRelative(ticket.lastMessageAt, now)}
-            </time>
+            <RelativeTime value={ticket.lastMessageAt} className="ml-auto text-xs text-slate-500" />
           </div>
         </div>
       </div>
     </Link>
   );
-}
+});
+
+export default TicketCard;
 
 export function TicketCardSkeleton() {
   return (

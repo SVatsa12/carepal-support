@@ -3,20 +3,19 @@ import toast from "react-hot-toast";
 import { Loader2, MessageSquareText, Pencil, Plus, Trash2 } from "lucide-react";
 import EmptyState from "../../components/EmptyState";
 import ErrorState from "../../components/ErrorState";
+import RelativeTime from "../../components/RelativeTime";
 import Skeleton from "../../components/Skeleton";
 import QuickReplyEditor from "../../components/admin/QuickReplyEditor";
 import { useAuth } from "../../hooks/useAuth";
-import { useNow } from "../../hooks/useNow";
 import { useQuickReplies } from "../../hooks/useQuickReplies";
 import { deleteQuickReply } from "../../services/quickReplies";
 import { ROLES } from "../../constants";
 import { quickReplyCategoryLabel } from "../../utils/quickReplies";
-import { formatRelative } from "../../utils/time";
 
 const PRIMARY_BUTTON =
-  "inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-brand-600 px-4 text-sm font-semibold text-white shadow-sm hover:bg-brand-700";
+  "inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-brand-700 px-4 text-sm font-semibold text-white shadow-sm hover:bg-brand-800";
 
-function ReplyCard({ reply, canEdit, onEdit, now }) {
+function ReplyCard({ reply, canEdit, onEdit }) {
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -43,7 +42,9 @@ function ReplyCard({ reply, canEdit, onEdit, now }) {
       <p className="mt-2 line-clamp-4 flex-1 whitespace-pre-line break-words text-sm text-slate-600">
         {reply.body}
       </p>
-      <p className="mt-2 text-xs text-slate-500">Updated {formatRelative(reply.updatedAt, now)}</p>
+      <p className="mt-2 text-xs text-slate-500">
+        <RelativeTime value={reply.updatedAt} prefix="Updated " />
+      </p>
 
       {canEdit &&
         (confirming ? (
@@ -101,7 +102,6 @@ function ReplyCard({ reply, canEdit, onEdit, now }) {
 export default function QuickReplies() {
   const { role, profile } = useAuth();
   const canEdit = role === ROLES.ADMIN;
-  const now = useNow();
   const { replies, loading, error, retry } = useQuickReplies();
   // undefined: editor closed; null: creating; object: editing that reply.
   const [editing, setEditing] = useState(undefined);
@@ -144,7 +144,7 @@ export default function QuickReplies() {
     content = (
       <ul className="grid gap-3 sm:grid-cols-2">
         {replies.map((reply) => (
-          <ReplyCard key={reply.id} reply={reply} canEdit={canEdit} onEdit={setEditing} now={now} />
+          <ReplyCard key={reply.id} reply={reply} canEdit={canEdit} onEdit={setEditing} />
         ))}
       </ul>
     );

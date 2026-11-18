@@ -106,7 +106,7 @@ const Composer = forwardRef(function Composer(
           type="submit"
           disabled={!canSend}
           aria-label={sending ? "Sending message" : "Send message"}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white shadow-sm hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-700 text-white shadow-sm hover:bg-brand-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {sending ? (
             <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin" />

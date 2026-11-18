@@ -12,7 +12,7 @@ const VIEWS = [
 ];
 
 const PRIMARY_BUTTON =
-  "inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-brand-600 px-4 text-sm font-semibold text-white shadow-sm hover:bg-brand-700";
+  "inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-brand-700 px-4 text-sm font-semibold text-white shadow-sm hover:bg-brand-800";
 
 function ViewToggle({ view, counts, onChange }) {
   return (

@@ -12,6 +12,7 @@ export default function UserMenu() {
   const { profile, signOut } = useAuth();
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
+  const buttonRef = useRef(null);
   const menuId = useId();
 
   useEffect(() => {
@@ -19,8 +20,11 @@ export default function UserMenu() {
     const closeOnOutsideClick = (event) => {
       if (!containerRef.current?.contains(event.target)) setOpen(false);
     };
+    // Escape closes and puts focus back on the avatar, so keyboard users don't lose their place.
     const closeOnEscape = (event) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      buttonRef.current?.focus();
     };
     document.addEventListener("pointerdown", closeOnOutsideClick);
     document.addEventListener("keydown", closeOnEscape);
@@ -33,6 +37,7 @@ export default function UserMenu() {
   return (
     <div ref={containerRef} className="relative">
       <button
+        ref={buttonRef}
         type="button"
         aria-label={`Account menu for ${profile?.name ?? "you"}`}
         aria-expanded={open}

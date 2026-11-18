@@ -7,6 +7,7 @@ const UPLOAD_FOLDER = "carepal-support";
 const UPLOAD_TIMEOUT_MS = 60_000;
 const CLOUDINARY_URL_PREFIX = "https://res.cloudinary.com/";
 
+/** Image MIME types members may attach to a ticket. */
 export const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/png",
@@ -25,6 +26,7 @@ export class UploadError extends Error {
   }
 }
 
+/** True when the Cloudinary cloud name and unsigned preset are set in the env. */
 export function isUploadConfigured() {
   return Boolean(CLOUD_NAME && UPLOAD_PRESET);
 }

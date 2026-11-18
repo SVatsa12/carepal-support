@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import { sendErrorMessage, sendMessage } from "../services/messages";
 import { notifyNewMessage } from "../services/notify";
+import { waitUntilOnline } from "../utils/network";
 
 let localCounter = 0;
 
@@ -36,6 +37,8 @@ export function useSendMessage(ticketId, sender, confirmedIds) {
         },
       ]);
       try {
+        // Transactions need the server, so offline the bubble keeps its clock until we reconnect.
+        await waitUntilOnline();
         const realId = await sendMessage({ ticketId, text, sender: { uid, name, role } });
         setOutgoing((items) =>
           items.map((item) => (item.id === localId ? { ...item, realId } : item)),

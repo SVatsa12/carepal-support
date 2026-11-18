@@ -129,6 +129,7 @@ export function assignTicket({ ticketId, assignee, actor }) {
   });
 }
 
+/** Staff: changes the priority and posts a system message, in one transaction. */
 export function updatePriority({ ticketId, priority, actor }) {
   return staffTransaction(ticketId, actor, (ticket) => {
     if (ticket.priority === priority) return null;

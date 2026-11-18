@@ -9,7 +9,6 @@ import InboxStats from "../../components/admin/InboxStats";
 import InboxRow, { InboxRowSkeleton } from "../../components/admin/InboxRow";
 import TicketDetail from "../../components/admin/TicketDetail";
 import { useAuth } from "../../hooks/useAuth";
-import { useNow } from "../../hooks/useNow";
 import { useStaff } from "../../hooks/useStaff";
 import {
   DEFAULT_FILTERS,
@@ -35,8 +34,6 @@ function readFilters(searchParams) {
 }
 
 function TicketList({ inbox, tickets, filters, selectedId, search, onClear }) {
-  const now = useNow();
-
   if (inbox.loading) {
     return (
       <div aria-busy="true" aria-label="Loading tickets">
@@ -88,7 +85,6 @@ function TicketList({ inbox, tickets, filters, selectedId, search, onClear }) {
             selected={ticket.id === selectedId}
             search={search}
             showStatus={filters.status === "all"}
-            now={now}
           />
         </li>
       ))}

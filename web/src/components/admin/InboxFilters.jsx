@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
 import clsx from "clsx";
+import Modal from "../Modal";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { CATEGORIES, PRIORITIES } from "../../constants";
 import { SORTS, STATUS_TABS } from "../../utils/filterTickets";
 
 const SEARCH_DEBOUNCE_MS = 200;
 
 const SELECT_CLASS =
-  "mt-1 block min-h-11 w-full rounded-lg border border-slate-300 bg-white px-2 text-sm text-slate-900 focus:border-brand-600";
+  "mt-1 block min-h-11 w-full rounded-lg border border-slate-300 bg-white px-2 text-base text-slate-900 focus:border-brand-600 sm:text-sm";
 
 /**
  * Search box that reports its value 200 ms after the last keystroke. `query` is the search
@@ -69,7 +71,8 @@ function SelectField({ id, label, value, onChange, children }) {
 }
 
 /**
- * Status tabs with live counts, debounced search, and a collapsible panel of dropdowns.
+ * Status tabs with live counts, debounced search, and the category / priority / assignee / sort
+ * dropdowns: an inline panel from sm up, a "Filters" bottom sheet on phones.
  * `onSearch` must be stable (useCallback) so typing isn't re-debounced on every render.
  */
 export default function InboxFilters({
@@ -81,7 +84,71 @@ export default function InboxFilters({
   onSearch,
   activeCount,
 }) {
-  const [showMore, setShowMore] = useState(activeCount > 0);
+  const wide = useMediaQuery("(min-width: 640px)");
+  const [panelOpen, setPanelOpen] = useState(activeCount > 0);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const closeSheet = useCallback(() => setSheetOpen(false), []);
+  const showMore = wide ? panelOpen : sheetOpen;
+
+  const fields = (
+    <div id="inbox-more-filters" className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-2">
+      <SelectField
+        id="filter-category"
+        label="Category"
+        value={filters.category}
+        onChange={(value) => onChange("category", value)}
+      >
+        <option value="all">All categories</option>
+        {CATEGORIES.map((item) => (
+          <option key={item.value} value={item.value}>
+            {item.label}
+          </option>
+        ))}
+      </SelectField>
+      <SelectField
+        id="filter-priority"
+        label="Priority"
+        value={filters.priority}
+        onChange={(value) => onChange("priority", value)}
+      >
+        <option value="all">All priorities</option>
+        {PRIORITIES.map((item) => (
+          <option key={item.value} value={item.value}>
+            {item.label}
+          </option>
+        ))}
+      </SelectField>
+      <SelectField
+        id="filter-assignee"
+        label="Assignee"
+        value={filters.assignee}
+        onChange={(value) => onChange("assignee", value)}
+      >
+        <option value="all">Anyone</option>
+        <option value="me">Me</option>
+        <option value="unassigned">Unassigned</option>
+        {staff
+          .filter((person) => person.id !== currentUid)
+          .map((person) => (
+            <option key={person.id} value={person.id}>
+              {person.name}
+            </option>
+          ))}
+      </SelectField>
+      <SelectField
+        id="filter-sort"
+        label="Sort by"
+        value={filters.sort}
+        onChange={(value) => onChange("sort", value)}
+      >
+        {SORTS.map((item) => (
+          <option key={item.value} value={item.value}>
+            {item.label}
+          </option>
+        ))}
+      </SelectField>
+    </div>
+  );
 
   return (
     <div className="shrink-0 space-y-3 border-b border-slate-200 bg-white p-3">
@@ -89,9 +156,10 @@ export default function InboxFilters({
         <SearchBox query={filters.q} onSearch={onSearch} />
         <button
           type="button"
-          onClick={() => setShowMore((value) => !value)}
+          onClick={() => (wide ? setPanelOpen((value) => !value) : setSheetOpen(true))}
           aria-expanded={showMore}
-          aria-controls="inbox-more-filters"
+          aria-controls={wide ? "inbox-more-filters" : undefined}
+          aria-haspopup={wide ? undefined : "dialog"}
           className={clsx(
             "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg border px-3 text-sm font-medium",
             showMore || activeCount
@@ -102,71 +170,30 @@ export default function InboxFilters({
           <SlidersHorizontal aria-hidden="true" className="h-4 w-4" />
           Filters
           {activeCount > 0 && (
-            <span className="rounded-full bg-brand-600 px-1.5 text-xs text-white">
+            <span className="rounded-full bg-brand-700 px-1.5 text-xs text-white">
               {activeCount}
             </span>
           )}
         </button>
       </div>
 
-      {showMore && (
-        <div id="inbox-more-filters" className="grid grid-cols-2 gap-2">
-          <SelectField
-            id="filter-category"
-            label="Category"
-            value={filters.category}
-            onChange={(value) => onChange("category", value)}
-          >
-            <option value="all">All categories</option>
-            {CATEGORIES.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </SelectField>
-          <SelectField
-            id="filter-priority"
-            label="Priority"
-            value={filters.priority}
-            onChange={(value) => onChange("priority", value)}
-          >
-            <option value="all">All priorities</option>
-            {PRIORITIES.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </SelectField>
-          <SelectField
-            id="filter-assignee"
-            label="Assignee"
-            value={filters.assignee}
-            onChange={(value) => onChange("assignee", value)}
-          >
-            <option value="all">Anyone</option>
-            <option value="me">Me</option>
-            <option value="unassigned">Unassigned</option>
-            {staff
-              .filter((person) => person.id !== currentUid)
-              .map((person) => (
-                <option key={person.id} value={person.id}>
-                  {person.name}
-                </option>
-              ))}
-          </SelectField>
-          <SelectField
-            id="filter-sort"
-            label="Sort by"
-            value={filters.sort}
-            onChange={(value) => onChange("sort", value)}
-          >
-            {SORTS.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </SelectField>
-        </div>
+      {wide && panelOpen && fields}
+      {!wide && sheetOpen && (
+        <Modal
+          title="Filters"
+          onClose={closeSheet}
+          footer={
+            <button
+              type="button"
+              onClick={closeSheet}
+              className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-brand-700 px-4 text-sm font-semibold text-white hover:bg-brand-800"
+            >
+              Show {counts[filters.status]} {counts[filters.status] === 1 ? "ticket" : "tickets"}
+            </button>
+          }
+        >
+          {fields}
+        </Modal>
       )}
 
       <div

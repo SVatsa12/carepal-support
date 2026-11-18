@@ -7,7 +7,7 @@ import { assignTicket, updatePriority, updateStatus } from "../../services/ticke
 import { PRIORITIES, STATUSES } from "../../constants";
 
 const SELECT_CLASS =
-  "block min-h-11 w-full min-w-0 rounded-lg border border-slate-300 bg-white px-2 text-sm text-slate-900 focus:border-brand-600 disabled:bg-slate-50 disabled:text-slate-500";
+  "block min-h-11 w-full min-w-0 rounded-lg border border-slate-300 bg-white px-2 text-base text-slate-900 focus:border-brand-600 sm:text-sm disabled:bg-slate-50 disabled:text-slate-500";
 
 function Field({ id, label, saving, children, className }) {
   return (

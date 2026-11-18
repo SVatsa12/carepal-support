@@ -6,17 +6,14 @@ import PriorityPill from "../tickets/PriorityPill";
 import StatusBadge from "../tickets/StatusBadge";
 import PhotoLightbox from "./PhotoLightbox";
 import { CATEGORIES } from "../../constants";
-import { formatRelative, toDate } from "../../utils/time";
-import { useNow } from "../../hooks/useNow";
+import RelativeTime from "../RelativeTime";
 
 /** Collapsible card with the ticket's details: what the member originally reported. */
 export default function TicketSummary({ ticket, defaultOpen = true }) {
-  const now = useNow();
   const [open, setOpen] = useState(defaultOpen);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const closeLightbox = useCallback(() => setLightboxOpen(false), []);
   const category = CATEGORIES.find((item) => item.value === ticket.category);
-  const created = toDate(ticket.createdAt);
   const panelId = `summary-${ticket.id}`;
 
   return (
@@ -35,7 +32,7 @@ export default function TicketSummary({ ticket, defaultOpen = true }) {
               {category?.label ?? "Ticket"}
             </span>
             <span className="block text-xs text-slate-500">
-              {ticket.ticketNo} · raised {formatRelative(created, now)}
+              {ticket.ticketNo} · <RelativeTime value={ticket.createdAt} prefix="raised " />
             </span>
           </span>
           <PriorityPill priority={ticket.priority} />
@@ -52,8 +49,7 @@ export default function TicketSummary({ ticket, defaultOpen = true }) {
               <StatusBadge status={ticket.status} />
               <PriorityPill priority={ticket.priority} />
               <span className="text-xs text-slate-500">
-                Created{" "}
-                <time dateTime={created?.toISOString()}>{formatRelative(created, now)}</time>
+                <RelativeTime value={ticket.createdAt} prefix="Created " />
               </span>
             </div>
             <p className="whitespace-pre-wrap break-words text-sm text-slate-700 [overflow-wrap:anywhere]">

@@ -6,6 +6,7 @@ import ErrorState from "../ErrorState";
 import { useQuickReplies } from "../../hooks/useQuickReplies";
 import { fillTemplate, firstName } from "../../utils/text";
 import { quickReplyCategoryLabel, rankQuickReplies } from "../../utils/quickReplies";
+import { trapTabKey } from "../../utils/focusTrap";
 
 /**
  * Quick replies for the staff composer toolbar: a popover (bottom sheet on phones) with search
@@ -28,6 +29,7 @@ export default function QuickReplyPicker({
   const containerRef = useRef(null);
   const inputRef = useRef(null);
   const listRef = useRef(null);
+  const panelRef = useRef(null);
 
   // "/" in the composer: open with whatever followed the slash as the search.
   if (openRequest && openRequest.id !== handledRequestId) {
@@ -82,11 +84,18 @@ export default function QuickReplyPicker({
     insertText(fillTemplate(reply.body, vars));
   }
 
-  function handleKeyDown(event) {
+  // Escape and Tab apply anywhere in the panel; the arrows and Enter only in the search box.
+  function handlePanelKeyDown(event) {
     if (event.key === "Escape") {
       event.preventDefault();
       close();
-    } else if (event.key === "ArrowDown" && results.length) {
+    } else {
+      trapTabKey(event, panelRef.current);
+    }
+  }
+
+  function handleKeyDown(event) {
+    if (event.key === "ArrowDown" && results.length) {
       event.preventDefault();
       setActive((activeIndex + 1) % results.length);
     } else if (event.key === "ArrowUp" && results.length) {
@@ -193,8 +202,10 @@ export default function QuickReplyPicker({
           <div aria-hidden="true" className="fixed inset-0 z-30 bg-slate-900/40 sm:hidden" />
           <div
             id="quick-reply-panel"
+            ref={panelRef}
             role="dialog"
             aria-label="Quick replies"
+            onKeyDown={handlePanelKeyDown}
             className="fixed inset-x-0 bottom-0 z-40 flex max-h-[80dvh] flex-col rounded-t-2xl border border-slate-200 bg-white pb-[env(safe-area-inset-bottom)] shadow-xl sm:absolute sm:inset-x-auto sm:bottom-full sm:left-0 sm:mb-2 sm:w-[26rem] sm:rounded-xl sm:pb-0"
           >
             <div className="flex items-center gap-2 border-b border-slate-100 p-2">

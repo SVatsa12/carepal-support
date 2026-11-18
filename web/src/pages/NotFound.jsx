@@ -13,7 +13,7 @@ export default function NotFound() {
           action={
             <Link
               to="/"
-              className="inline-flex min-h-11 items-center rounded-xl bg-brand-600 px-4 text-sm font-medium text-white hover:bg-brand-700"
+              className="inline-flex min-h-11 items-center rounded-xl bg-brand-700 px-4 text-sm font-medium text-white hover:bg-brand-800"
             >
               Go to home
             </Link>

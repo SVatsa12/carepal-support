@@ -149,7 +149,7 @@ export default function RatingCard({ ticket }) {
       <button
         type="submit"
         disabled={saving || tooLong}
-        className="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60 sm:w-auto"
+        className="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 text-sm font-semibold text-white hover:bg-brand-800 disabled:opacity-60 sm:w-auto"
       >
         {saving && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
         {saving ? "Sending…" : "Submit rating"}

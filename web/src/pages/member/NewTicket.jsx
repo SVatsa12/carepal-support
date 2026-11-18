@@ -264,7 +264,7 @@ export default function NewTicket() {
         <button
           type="submit"
           disabled={submitting}
-          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 text-sm font-semibold text-white shadow-sm hover:bg-brand-800 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitting ? (
             <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />

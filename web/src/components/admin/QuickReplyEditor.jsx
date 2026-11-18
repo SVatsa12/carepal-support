@@ -102,7 +102,7 @@ export default function QuickReplyEditor({ reply, agentName, onClose }) {
             type="submit"
             form="quick-reply-form"
             disabled={saving}
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand-600 px-4 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand-700 px-4 text-sm font-semibold text-white hover:bg-brand-800 disabled:opacity-60"
           >
             {saving && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             {saving ? "Saving…" : "Save"}
@@ -208,7 +208,7 @@ export default function QuickReplyEditor({ reply, agentName, onClose }) {
             {form.body.trim() ? (
               fillTemplate(form.body, samples)
             ) : (
-              <span className="text-slate-400">Your message will appear here.</span>
+              <span className="text-slate-500">Your message will appear here.</span>
             )}
           </div>
         </section>
