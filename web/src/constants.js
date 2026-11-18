@@ -125,3 +125,18 @@ export const TICKET_LIMITS = {
 
 // Typical first-reply time quoted to families after they raise a ticket.
 export const TYPICAL_REPLY_MINUTES = 15;
+
+// Quick replies. Limits must match firestore.rules.
+export const QUICK_REPLY_LIMITS = {
+  TITLE_MIN: 3,
+  TITLE_MAX: 60,
+  BODY_MIN: 5,
+  BODY_MAX: 1000,
+};
+
+// Placeholders a quick reply body may use, with sample values for the editor preview.
+export const QUICK_REPLY_PLACEHOLDERS = [
+  { key: "memberName", label: "Member's first name", sample: "Priya" },
+  { key: "ticketNo", label: "Ticket number", sample: "TCP-7KQ2XA" },
+  { key: "agentName", label: "Your first name", sample: "Rohit" },
+];

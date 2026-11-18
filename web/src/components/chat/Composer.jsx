@@ -11,10 +11,12 @@ const COUNTER_FROM = MESSAGE_MAX - 200;
  * new line. The textarea stays enabled while sending so the mobile keyboard doesn't close.
  *
  * `onSend(text)` resolves true on success; on failure the text is put back.
+ * `onSlash(query)`: optional. Typing "/" into an empty box calls it (with any text after the
+ * slash) instead of inserting the slash; the staff composer uses it to open quick replies.
  * Ref API: `insertText(text)` appends text, focuses and puts the cursor at the end.
  */
 const Composer = forwardRef(function Composer(
-  { onSend, sending, toolbar, placeholder = "Type a message" },
+  { onSend, sending, toolbar, onSlash, placeholder = "Type a message" },
   ref,
 ) {
   const [value, setValue] = useState("");
@@ -88,7 +90,14 @@ const Composer = forwardRef(function Composer(
           rows={1}
           value={value}
           placeholder={placeholder}
-          onChange={(event) => setValue(event.target.value)}
+          onChange={(event) => {
+            const next = event.target.value;
+            if (onSlash && value === "" && next.startsWith("/")) {
+              onSlash(next.slice(1));
+              return;
+            }
+            setValue(next);
+          }}
           onKeyDown={handleKeyDown}
           aria-describedby={trimmed.length >= COUNTER_FROM ? "composer-count" : undefined}
           className="block min-h-11 flex-1 resize-none rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base leading-6 text-slate-900 focus:border-brand-600 sm:text-sm"

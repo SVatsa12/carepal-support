@@ -190,16 +190,17 @@ service cloud.firestore {
           && data.updatedAt == request.time;
       }
 
+      // Agents use quick replies; only admins manage them.
       allow read: if isStaff();
-      allow create: if isStaff()
+      allow create: if isAdmin()
         && validQuickReplyFields(request.resource.data)
         && request.resource.data.createdBy == request.auth.uid
         && request.resource.data.createdAt == request.time;
-      allow update: if isStaff()
+      allow update: if isAdmin()
         && validQuickReplyFields(request.resource.data)
         && request.resource.data.createdBy == resource.data.createdBy
         && request.resource.data.createdAt == resource.data.createdAt;
-      allow delete: if isStaff();
+      allow delete: if isAdmin();
     }
 
     // Everything else is denied by default (no other match blocks).

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { SearchX, SlidersHorizontal } from "lucide-react";
 import clsx from "clsx";
+import QuickReplyPicker from "./QuickReplyPicker";
 import TicketControls from "./TicketControls";
 import BackLink from "../BackLink";
 import EmptyState from "../EmptyState";
@@ -126,6 +127,7 @@ export default function TicketDetail({ ticketId, backTo }) {
       <Conversation
         ticket={ticket}
         viewer={viewer}
+        Toolbar={QuickReplyPicker}
         emptyText={
           ticket.status === "pending"
             ? "No replies yet. Your reply moves the ticket to In progress."

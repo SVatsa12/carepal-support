@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import ChatThread from "./ChatThread";
 import Composer from "./Composer";
 import TicketSummary from "./TicketSummary";
@@ -10,8 +10,9 @@ import { useSendMessage } from "../../hooks/useSendMessage";
  *
  * - `viewer`: { uid, name, role: "member" | "staff" }
  * - `closedNotice`: rendered instead of the composer when replies are closed.
- * - `Toolbar`: optional component rendered above the composer as <Toolbar insertText={fn} />
- *   (quick replies use it to drop text into the message box).
+ * - `Toolbar`: optional component rendered above the composer (the staff quick-reply picker).
+ *   It receives { ticket, viewer, insertText, focusComposer, openRequest }; `openRequest`
+ *   ({ id, query }) changes whenever "/" is typed into the empty composer.
  */
 export default function Conversation({
   ticket,
@@ -26,6 +27,12 @@ export default function Conversation({
   const { send, pendingMessages, sending } = useSendMessage(ticket.id, viewer, confirmedIds);
   const composerRef = useRef(null);
   const insertText = useCallback((text) => composerRef.current?.insertText(text), []);
+  const focusComposer = useCallback(() => composerRef.current?.focus(), []);
+  const [openRequest, setOpenRequest] = useState(null);
+  const handleSlash = useCallback(
+    (query) => setOpenRequest((previous) => ({ id: (previous?.id ?? 0) + 1, query })),
+    [],
+  );
 
   const shown = pendingMessages.length ? [...messages, ...pendingMessages] : messages;
 
@@ -47,7 +54,18 @@ export default function Conversation({
           ref={composerRef}
           onSend={send}
           sending={sending}
-          toolbar={Toolbar ? <Toolbar insertText={insertText} /> : null}
+          onSlash={Toolbar ? handleSlash : undefined}
+          toolbar={
+            Toolbar ? (
+              <Toolbar
+                ticket={ticket}
+                viewer={viewer}
+                insertText={insertText}
+                focusComposer={focusComposer}
+                openRequest={openRequest}
+              />
+            ) : null
+          }
         />
       )}
     </>
