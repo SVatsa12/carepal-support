@@ -20,7 +20,7 @@ const MessageBubble = memo(function MessageBubble({ message, own, showSender }) 
     <div className={clsx("flex", own ? "justify-end" : "justify-start")}>
       <div
         className={clsx(
-          "max-w-[85%] rounded-2xl px-3.5 py-2 shadow-sm sm:max-w-[75%]",
+          "max-w-[85%] rounded-2xl px-3.5 py-2 shadow-sm sm:max-w-[75%] lg:max-w-[70%]",
           own
             ? "rounded-br-md bg-brand-700 text-white"
             : "rounded-bl-md border border-slate-200 bg-white text-slate-900",

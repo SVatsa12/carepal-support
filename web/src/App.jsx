@@ -15,7 +15,6 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import MyTickets from "./pages/member/MyTickets";
 import NewTicket from "./pages/member/NewTicket";
-import TicketChat from "./pages/member/TicketChat";
 
 // Staff pages load on demand; AdminLayout wraps them in <Suspense>.
 const Inbox = lazy(() => import("./pages/admin/Inbox"));
@@ -45,9 +44,9 @@ export default function App() {
                   <Route index element={<Navigate to="tickets" replace />} />
                   <Route path="tickets" element={<MyTickets />} />
                   <Route path="tickets/new" element={<NewTicket />} />
+                  {/* Same page as the list: the chat opens beside it on desktop, full screen on phones. */}
+                  <Route path="tickets/:ticketId" element={<MyTickets />} />
                 </Route>
-                {/* The chat is full-height with its own header, so it sits outside MemberLayout. */}
-                <Route path="tickets/:ticketId" element={<TicketChat />} />
               </Route>
 
               <Route

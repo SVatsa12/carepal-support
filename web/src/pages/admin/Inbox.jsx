@@ -149,7 +149,7 @@ export default function Inbox() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col min-[1600px]:border-x min-[1600px]:border-slate-200">
       {/* On phones the open ticket gets the whole screen, so the summary shows with the list only. */}
       <div className={ticketId ? "hidden lg:block" : undefined}>
         <InboxStats tickets={inbox.tickets} />
@@ -158,7 +158,7 @@ export default function Inbox() {
         <section
           aria-labelledby="inbox-heading"
           className={clsx(
-            "min-h-0 w-full flex-col border-slate-200 bg-white lg:w-[380px] lg:shrink-0 lg:border-r",
+            "min-h-0 w-full flex-col border-slate-200 bg-white lg:w-[380px] lg:shrink-0 lg:border-r 2xl:w-[420px]",
             ticketId ? "hidden lg:flex" : "flex",
           )}
         >

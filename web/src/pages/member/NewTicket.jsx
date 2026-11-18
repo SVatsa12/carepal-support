@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import clsx from "clsx";
 import BackLink from "../../components/BackLink";
 import CategoryPicker from "../../components/tickets/CategoryPicker";
+import NewTicketHelp from "../../components/member/NewTicketHelp";
 import PrioritySelector from "../../components/tickets/PrioritySelector";
 import PhotoPicker from "../../components/tickets/PhotoPicker";
 import { useAuth } from "../../hooks/useAuth";
@@ -153,131 +154,142 @@ export default function NewTicket() {
     : "Photo uploads aren't available right now — describe the issue in words instead.";
 
   return (
-    <section aria-labelledby="new-ticket-heading" className="space-y-4">
-      <BackLink to="/app/tickets" label="Your tickets" />
-      <div>
-        <h1 id="new-ticket-heading" className="text-lg font-semibold text-slate-900">
-          Raise a new ticket
-        </h1>
-        <p className="mt-1 text-sm text-slate-600">
-          Tell us what happened and our care team will reply in this app.
-        </p>
-      </div>
-
-      <form noValidate onSubmit={handleSubmit} className="space-y-6">
-        <CategoryPicker
-          value={category}
-          disabled={submitting}
-          error={errors.category}
-          onChange={(value) => {
-            setCategory(value);
-            clearError("category");
-          }}
-        />
-
-        <PrioritySelector
-          value={priority}
-          disabled={submitting}
-          error={errors.priority}
-          onChange={(value) => {
-            setPriority(value);
-            clearError("priority");
-          }}
-        />
-
+    <div className="lg:grid lg:grid-cols-3 lg:items-start lg:gap-8">
+      <section
+        aria-labelledby="new-ticket-heading"
+        className="space-y-4 md:max-w-2xl lg:col-span-2 lg:max-w-none"
+      >
+        <BackLink to="/app/tickets" label="Your tickets" />
         <div>
-          <div className="flex items-baseline justify-between gap-2">
-            <label htmlFor="subject" className="text-sm font-medium text-slate-700">
-              Subject
-            </label>
-            <CharCount
-              id="subject-count"
-              length={subject.trim().length}
-              max={TICKET_LIMITS.SUBJECT_MAX}
-            />
-          </div>
-          <input
-            id="subject"
-            type="text"
-            value={subject}
-            maxLength={TICKET_LIMITS.SUBJECT_MAX}
-            disabled={submitting}
-            placeholder="e.g. Nurse didn't arrive for the morning shift"
-            onChange={(event) => {
-              setSubject(event.target.value);
-              clearError("subject");
-            }}
-            aria-invalid={Boolean(errors.subject)}
-            aria-describedby={clsx("subject-count", errors.subject && "subject-error")}
-            className={clsx(inputClasses(errors.subject), "min-h-11")}
-          />
-          {errors.subject && (
-            <p id="subject-error" className="mt-1 text-sm text-red-700">
-              {errors.subject}
-            </p>
-          )}
+          <h1 id="new-ticket-heading" className="text-lg font-semibold text-slate-900">
+            Raise a new ticket
+          </h1>
+          <p className="mt-1 text-sm text-slate-600">
+            Tell us what happened and our care team will reply in this app.
+          </p>
         </div>
 
-        <div>
-          <div className="flex items-baseline justify-between gap-2">
-            <label htmlFor="description" className="text-sm font-medium text-slate-700">
-              Details
-            </label>
-            <CharCount
-              id="description-count"
-              length={description.trim().length}
-              max={TICKET_LIMITS.DESCRIPTION_MAX}
-            />
-          </div>
-          <textarea
-            id="description"
-            rows={5}
-            value={description}
+        <form noValidate onSubmit={handleSubmit} className="space-y-6">
+          <CategoryPicker
+            value={category}
             disabled={submitting}
-            placeholder="What happened, when, and who was involved? Include anything that helps us act quickly."
-            onChange={(event) => {
-              setDescription(event.target.value);
-              clearError("description");
+            error={errors.category}
+            onChange={(value) => {
+              setCategory(value);
+              clearError("category");
             }}
-            aria-invalid={Boolean(errors.description)}
-            aria-describedby={clsx("description-count", errors.description && "description-error")}
-            className={clsx(inputClasses(errors.description), "resize-y py-2")}
           />
-          {errors.description && (
-            <p id="description-error" className="mt-1 text-sm text-red-700">
-              {errors.description}
-            </p>
-          )}
-        </div>
 
-        <PhotoPicker
-          previewUrl={photo?.previewUrl}
-          fileName={photo?.file.name}
-          progress={progress}
-          error={photoError}
-          disabled={submitting}
-          unavailableReason={uploadUnavailable}
-          onSelect={handlePhotoSelect}
-          onRemove={handlePhotoRemove}
-        />
+          <PrioritySelector
+            value={priority}
+            disabled={submitting}
+            error={errors.priority}
+            onChange={(value) => {
+              setPriority(value);
+              clearError("priority");
+            }}
+          />
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 text-sm font-semibold text-white shadow-sm hover:bg-brand-800 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {submitting ? (
-            <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
-          ) : (
-            <Send aria-hidden="true" className="h-4 w-4" />
-          )}
-          {submitting
-            ? progress !== null
-              ? "Uploading photo…"
-              : "Raising ticket…"
-            : "Raise ticket"}
-        </button>
-      </form>
-    </section>
+          <div>
+            <div className="flex items-baseline justify-between gap-2">
+              <label htmlFor="subject" className="text-sm font-medium text-slate-700">
+                Subject
+              </label>
+              <CharCount
+                id="subject-count"
+                length={subject.trim().length}
+                max={TICKET_LIMITS.SUBJECT_MAX}
+              />
+            </div>
+            <input
+              id="subject"
+              type="text"
+              value={subject}
+              maxLength={TICKET_LIMITS.SUBJECT_MAX}
+              disabled={submitting}
+              placeholder="e.g. Nurse didn't arrive for the morning shift"
+              onChange={(event) => {
+                setSubject(event.target.value);
+                clearError("subject");
+              }}
+              aria-invalid={Boolean(errors.subject)}
+              aria-describedby={clsx("subject-count", errors.subject && "subject-error")}
+              className={clsx(inputClasses(errors.subject), "min-h-11")}
+            />
+            {errors.subject && (
+              <p id="subject-error" className="mt-1 text-sm text-red-700">
+                {errors.subject}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <div className="flex items-baseline justify-between gap-2">
+              <label htmlFor="description" className="text-sm font-medium text-slate-700">
+                Details
+              </label>
+              <CharCount
+                id="description-count"
+                length={description.trim().length}
+                max={TICKET_LIMITS.DESCRIPTION_MAX}
+              />
+            </div>
+            <textarea
+              id="description"
+              rows={5}
+              value={description}
+              disabled={submitting}
+              placeholder="What happened, when, and who was involved? Include anything that helps us act quickly."
+              onChange={(event) => {
+                setDescription(event.target.value);
+                clearError("description");
+              }}
+              aria-invalid={Boolean(errors.description)}
+              aria-describedby={clsx(
+                "description-count",
+                errors.description && "description-error",
+              )}
+              className={clsx(inputClasses(errors.description), "resize-y py-2")}
+            />
+            {errors.description && (
+              <p id="description-error" className="mt-1 text-sm text-red-700">
+                {errors.description}
+              </p>
+            )}
+          </div>
+
+          <PhotoPicker
+            previewUrl={photo?.previewUrl}
+            fileName={photo?.file.name}
+            progress={progress}
+            error={photoError}
+            disabled={submitting}
+            unavailableReason={uploadUnavailable}
+            onSelect={handlePhotoSelect}
+            onRemove={handlePhotoRemove}
+          />
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 text-sm font-semibold text-white shadow-sm hover:bg-brand-800 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {submitting ? (
+              <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send aria-hidden="true" className="h-4 w-4" />
+            )}
+            {submitting
+              ? progress !== null
+                ? "Uploading photo…"
+                : "Raising ticket…"
+              : "Raise ticket"}
+          </button>
+        </form>
+      </section>
+      <aside className="hidden lg:sticky lg:top-24 lg:block">
+        <NewTicketHelp />
+      </aside>
+    </div>
   );
 }

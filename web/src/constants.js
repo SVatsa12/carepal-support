@@ -126,6 +126,9 @@ export const TICKET_LIMITS = {
 // Typical first-reply time quoted to families after they raise a ticket.
 export const TYPICAL_REPLY_MINUTES = 15;
 
+// Care helpline for urgent issues. Synthetic placeholder number for this demo.
+export const HELPLINE = { display: "1800 000 0000", tel: "+9118000000000" };
+
 // Quick replies. Limits must match firestore.rules.
 export const QUICK_REPLY_LIMITS = {
   TITLE_MIN: 3,

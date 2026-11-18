@@ -13,6 +13,8 @@ import { useSendMessage } from "../../hooks/useSendMessage";
  * - `Toolbar`: optional component rendered above the composer (the staff quick-reply picker).
  *   It receives { ticket, viewer, insertText, focusComposer, openRequest }; `openRequest`
  *   ({ id, query }) changes whenever "/" is typed into the empty composer.
+ * - `summarySidebar`: from xl up, show the ticket details in a right-hand column instead of
+ *   the collapsible card above the messages (member chat).
  */
 export default function Conversation({
   ticket,
@@ -21,6 +23,7 @@ export default function Conversation({
   Toolbar,
   emptyText,
   summaryDefaultOpen,
+  summarySidebar = false,
 }) {
   const { messages, loading, error, retry } = useMessages(ticket.id);
   const confirmedIds = useMemo(() => new Set(messages.map((message) => message.id)), [messages]);
@@ -37,37 +40,48 @@ export default function Conversation({
   const shown = pendingMessages.length ? [...messages, ...pendingMessages] : messages;
 
   return (
-    <>
-      <ChatThread
-        key={ticket.id}
-        messages={shown}
-        viewerSide={viewer.role}
-        viewerId={viewer.uid}
-        loading={loading}
-        error={error}
-        onRetry={retry}
-        emptyText={emptyText}
-        header={<TicketSummary ticket={ticket} defaultOpen={summaryDefaultOpen} />}
-      />
-      {closedNotice ?? (
-        <Composer
-          ref={composerRef}
-          onSend={send}
-          sending={sending}
-          onSlash={Toolbar ? handleSlash : undefined}
-          toolbar={
-            Toolbar ? (
-              <Toolbar
-                ticket={ticket}
-                viewer={viewer}
-                insertText={insertText}
-                focusComposer={focusComposer}
-                openRequest={openRequest}
-              />
-            ) : null
+    <div className="flex min-h-0 flex-1">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <ChatThread
+          key={ticket.id}
+          messages={shown}
+          viewerSide={viewer.role}
+          viewerId={viewer.uid}
+          loading={loading}
+          error={error}
+          onRetry={retry}
+          emptyText={emptyText}
+          header={
+            <div className={summarySidebar ? "xl:hidden" : undefined}>
+              <TicketSummary ticket={ticket} defaultOpen={summaryDefaultOpen} />
+            </div>
           }
         />
+        {closedNotice ?? (
+          <Composer
+            ref={composerRef}
+            onSend={send}
+            sending={sending}
+            onSlash={Toolbar ? handleSlash : undefined}
+            toolbar={
+              Toolbar ? (
+                <Toolbar
+                  ticket={ticket}
+                  viewer={viewer}
+                  insertText={insertText}
+                  focusComposer={focusComposer}
+                  openRequest={openRequest}
+                />
+              ) : null
+            }
+          />
+        )}
+      </div>
+      {summarySidebar && (
+        <aside className="hidden w-[300px] shrink-0 overflow-y-auto border-l border-slate-200 bg-white xl:block">
+          <TicketSummary ticket={ticket} variant="sidebar" />
+        </aside>
       )}
-    </>
+    </div>
   );
 }

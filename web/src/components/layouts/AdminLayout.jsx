@@ -53,7 +53,7 @@ export default function AdminLayout() {
     // inbox panes and the chat composer never push the page past the viewport.
     <div className="flex h-dvh flex-col">
       <header className="z-10 shrink-0 border-b border-slate-200 bg-white">
-        <div className="flex h-16 items-center gap-2 px-3 sm:gap-4 sm:px-6">
+        <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center gap-2 px-3 sm:gap-4 sm:px-6">
           <Link to="/admin/inbox" aria-label="CarePal Support inbox" className="rounded-lg">
             <Logo compact />
           </Link>

@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
+import clsx from "clsx";
 import CategoryIcon from "./CategoryIcon";
 import PriorityPill from "./PriorityPill";
 import StatusBadge from "./StatusBadge";
@@ -10,17 +11,22 @@ import RelativeTime from "../RelativeTime";
 import Skeleton from "../Skeleton";
 
 /**
- * One ticket in the member's list; the whole card links to the chat. Memoised: the clock tick
- * only re-renders its timers.
+ * One ticket in the member's list; the whole card links to the chat. `search` keeps the list's
+ * view (?view=resolved) in the link; `selected` marks the ticket open beside the list on
+ * desktop. Memoised: the clock tick only re-renders its timers.
  */
-const TicketCard = memo(function TicketCard({ ticket }) {
+const TicketCard = memo(function TicketCard({ ticket, search = "", selected = false }) {
   const hasUnread = ticket.unreadMember > 0;
   const speaker = ticket.lastMessageRole === "member" ? "You" : "CarePal";
 
   return (
     <Link
-      to={`/app/tickets/${ticket.id}`}
-      className="block rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-brand-300 hover:shadow"
+      to={`/app/tickets/${ticket.id}${search}`}
+      aria-current={selected ? "page" : undefined}
+      className={clsx(
+        "block h-full rounded-xl border bg-white p-4 shadow-sm transition hover:border-brand-300 hover:shadow",
+        selected ? "border-brand-600 ring-1 ring-brand-600" : "border-slate-200",
+      )}
     >
       <div className="flex gap-3">
         <CategoryIcon category={ticket.category} />

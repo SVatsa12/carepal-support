@@ -7,8 +7,11 @@ function initialsOf(name = "") {
   return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase() || "?";
 }
 
-/** Avatar button that opens a small menu with the user's name and a sign-out action. */
-export default function UserMenu() {
+/**
+ * Avatar button that opens a small menu with the user's name and a sign-out action.
+ * `showName` also prints the name beside the avatar from md up.
+ */
+export default function UserMenu({ showName = false }) {
   const { profile, signOut } = useAuth();
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
@@ -43,9 +46,24 @@ export default function UserMenu() {
         aria-expanded={open}
         aria-controls={menuId}
         onClick={() => setOpen((value) => !value)}
-        className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-50 text-sm font-semibold text-brand-800 hover:bg-brand-100"
+        className={
+          showName
+            ? "flex min-h-11 items-center gap-2 rounded-full hover:bg-slate-100 md:pr-3"
+            : "flex h-11 w-11 items-center justify-center rounded-full bg-brand-50 text-sm font-semibold text-brand-800 hover:bg-brand-100"
+        }
       >
-        {initialsOf(profile?.name)}
+        {showName ? (
+          <>
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-50 text-sm font-semibold text-brand-800">
+              {initialsOf(profile?.name)}
+            </span>
+            <span className="hidden max-w-[10rem] truncate text-sm font-medium text-slate-700 md:inline">
+              {profile?.name}
+            </span>
+          </>
+        ) : (
+          initialsOf(profile?.name)
+        )}
       </button>
       {open && (
         <div

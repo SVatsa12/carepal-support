@@ -27,7 +27,7 @@ export default function InboxStats({ tickets }) {
   return (
     <dl
       aria-label="Inbox summary"
-      className="flex shrink-0 gap-2 overflow-x-auto border-b border-slate-200 bg-slate-50 px-3 py-2"
+      className="relative flex shrink-0 gap-2 overflow-x-auto border-b border-slate-200 bg-slate-50 px-3 py-2"
     >
       <Stat label="Open tickets">{stats.open}</Stat>
       <Stat label="Waiting on us">{stats.waitingOnUs}</Stat>

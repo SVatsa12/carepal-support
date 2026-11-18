@@ -2,12 +2,12 @@ import clsx from "clsx";
 import CategoryIcon from "./CategoryIcon";
 import { CATEGORIES } from "../../constants";
 
-/** Two-column grid of tappable category cards (a styled radio group). */
+/** Two-column (three on desktop) grid of tappable category cards (a styled radio group). */
 export default function CategoryPicker({ value, onChange, error, disabled }) {
   return (
     <fieldset aria-describedby={error ? "category-error" : undefined} disabled={disabled}>
       <legend className="text-sm font-medium text-slate-700">What is this about?</legend>
-      <div className="mt-2 grid grid-cols-2 gap-2">
+      <div className="mt-2 grid grid-cols-2 gap-2 lg:grid-cols-3">
         {CATEGORIES.map((category) => (
           <label
             key={category.value}
