@@ -8,5 +8,18 @@
   "engines": {
     "node": ">=20.19"
   },
-  "scripts": {}
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "express": "^4.22.3",
+    "express-rate-limit": "^8.7.4",
+    "firebase-admin": "^14.5.1",
+    "helmet": "^8.3.0",
+    "nodemailer": "^10.6.0"
+  }
 }
