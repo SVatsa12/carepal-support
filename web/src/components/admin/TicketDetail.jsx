@@ -9,6 +9,7 @@ import EmptyState from "../EmptyState";
 import ErrorState from "../ErrorState";
 import Skeleton from "../Skeleton";
 import Conversation from "../chat/Conversation";
+import StarRating from "../tickets/StarRating";
 import StatusBadge from "../tickets/StatusBadge";
 import WaitTimer from "../WaitTimer";
 import { useAuth } from "../../hooks/useAuth";
@@ -45,6 +46,15 @@ function DetailHeader({ ticket, backTo, actor }) {
               {formatRelative(ticket.createdAt, now)}
             </p>
           </div>
+          {ticket.rating && (
+            <p className="mt-0.5 flex min-w-0 items-start gap-1.5 text-xs text-slate-600">
+              <span className="shrink-0">Member rating</span>
+              <StarRating score={ticket.rating.score} className="shrink-0" />
+              {ticket.rating.comment && (
+                <span className="line-clamp-2 break-words italic">“{ticket.rating.comment}”</span>
+              )}
+            </p>
+          )}
         </div>
         <div className="flex shrink-0 items-center gap-1 sm:hidden">
           <StatusBadge status={ticket.status} />

@@ -1,6 +1,6 @@
 import { collection, doc, runTransaction, serverTimestamp, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
-import { PREVIEW_MAX, PRIORITIES, STATUSES } from "../constants";
+import { PREVIEW_MAX, PRIORITIES, RATING_COMMENT_MAX, STATUSES } from "../constants";
 import { firstName, truncate } from "../utils/text";
 import { ticketNoFromId } from "../utils/tickets";
 
@@ -137,4 +137,58 @@ export function updatePriority({ ticketId, priority, actor }) {
       text: `${firstName(actor.name)} changed priority to ${PRIORITY_LABELS[priority]}`,
     };
   });
+}
+
+// ---------- Member rating ----------
+
+/** Rating failure with a `code` and a message that is safe to show the member. */
+export class RatingError extends Error {
+  constructor(code, message) {
+    super(message);
+    this.name = "RatingError";
+    this.code = code;
+  }
+}
+
+/**
+ * Member rates a resolved ticket, once. Writes only `rating` and `updatedAt`, the shape the
+ * rules allow; the transaction gives a friendly error if it was already rated or reopened.
+ */
+export async function submitRating({ ticketId, score, comment }) {
+  if (!Number.isInteger(score) || score < 1 || score > 5) {
+    throw new RatingError("invalid", "Choose between 1 and 5 stars.");
+  }
+  const cleanComment = (comment ?? "").trim();
+  if (cleanComment.length > RATING_COMMENT_MAX) {
+    throw new RatingError("invalid", `Comments can be up to ${RATING_COMMENT_MAX} characters.`);
+  }
+
+  const ticketRef = doc(db, "tickets", ticketId);
+  try {
+    await runTransaction(db, async (transaction) => {
+      const snapshot = await transaction.get(ticketRef);
+      if (!snapshot.exists()) throw new RatingError("not-found", "This ticket no longer exists.");
+      const ticket = snapshot.data();
+      if (ticket.rating) {
+        throw new RatingError("already-rated", "You've already rated this ticket. Thank you!");
+      }
+      if (ticket.status !== "resolved") {
+        throw new RatingError(
+          "not-resolved",
+          "This ticket isn't resolved right now, so it can't be rated yet.",
+        );
+      }
+      transaction.update(ticketRef, {
+        rating: { score, comment: cleanComment, createdAt: serverTimestamp() },
+        updatedAt: serverTimestamp(),
+      });
+    });
+  } catch (error) {
+    if (error instanceof RatingError) throw error;
+    // The rules reject a second rating too (e.g. two tabs submitting at once).
+    if (error?.code === "permission-denied") {
+      throw new RatingError("already-rated", "This ticket has already been rated. Thank you!");
+    }
+    throw error;
+  }
 }

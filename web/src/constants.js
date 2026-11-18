@@ -140,3 +140,7 @@ export const QUICK_REPLY_PLACEHOLDERS = [
   { key: "ticketNo", label: "Ticket number", sample: "TCP-7KQ2XA" },
   { key: "agentName", label: "Your first name", sample: "Rohit" },
 ];
+
+// Satisfaction rating on resolved tickets. The comment limit must match firestore.rules.
+export const RATING_COMMENT_MAX = 500;
+export const RATING_LABELS = { 1: "Very poor", 2: "Poor", 3: "Okay", 4: "Good", 5: "Excellent" };

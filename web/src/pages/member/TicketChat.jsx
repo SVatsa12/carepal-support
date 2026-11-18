@@ -6,6 +6,7 @@ import EmptyState from "../../components/EmptyState";
 import ErrorState from "../../components/ErrorState";
 import Skeleton from "../../components/Skeleton";
 import Conversation from "../../components/chat/Conversation";
+import RatingCard from "../../components/member/RatingCard";
 import StatusBadge from "../../components/tickets/StatusBadge";
 import WaitTimer from "../../components/WaitTimer";
 import { useAuth } from "../../hooks/useAuth";
@@ -16,9 +17,11 @@ import { TYPICAL_REPLY_MINUTES } from "../../constants";
 const NEW_TICKET_LINK =
   "inline-flex min-h-11 items-center justify-center rounded-xl bg-brand-600 px-4 text-sm font-medium text-white hover:bg-brand-700";
 
-function ResolvedNotice() {
+/** Replaces the composer on a resolved ticket: the rating card plus a way to get more help. */
+function ResolvedNotice({ ticket }) {
   return (
-    <div className="border-t border-slate-200 bg-white px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
+    <div className="max-h-[65dvh] space-y-3 overflow-y-auto border-t border-slate-200 bg-white px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
+      <RatingCard ticket={ticket} />
       <div className="flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-3 sm:flex-row sm:items-center">
         <p className="flex flex-1 items-center gap-2 text-sm text-emerald-900">
           <CheckCircle2 aria-hidden="true" className="h-5 w-5 shrink-0 text-emerald-700" />
@@ -86,7 +89,7 @@ export default function TicketChat() {
         ticket={ticket}
         viewer={viewer}
         emptyText={`No replies yet. Our team usually replies within ${TYPICAL_REPLY_MINUTES} minutes.`}
-        closedNotice={ticket.status === "resolved" ? <ResolvedNotice /> : null}
+        closedNotice={ticket.status === "resolved" ? <ResolvedNotice ticket={ticket} /> : null}
       />
     );
   }

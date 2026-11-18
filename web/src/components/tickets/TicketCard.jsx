@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Star } from "lucide-react";
 import CategoryIcon from "./CategoryIcon";
 import PriorityPill from "./PriorityPill";
 import StatusBadge from "./StatusBadge";
@@ -39,6 +40,13 @@ export default function TicketCard({ ticket }) {
             <span className="text-xs font-medium text-slate-500">{ticket.ticketNo}</span>
             <StatusBadge status={ticket.status} />
             <PriorityPill priority={ticket.priority} />
+            {ticket.status === "resolved" && !ticket.rating && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-800 ring-1 ring-inset ring-amber-200">
+                <Star aria-hidden="true" className="h-3 w-3 fill-amber-400 text-amber-500" />
+                Rate
+                <span className="sr-only"> this ticket</span>
+              </span>
+            )}
           </div>
 
           <p className="mt-2 line-clamp-2 break-words text-sm text-slate-600">
