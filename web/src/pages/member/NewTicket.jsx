@@ -121,7 +121,7 @@ export default function NewTicket() {
         console.error("Photo upload failed", error);
         const message =
           error instanceof UploadError ? error.message : "Photo upload failed. Please try again.";
-        setPhotoError(`${message} You can retry, or remove the photo and submit without it.`);
+        setPhotoError(`${message} Or remove the photo to raise the ticket without it.`);
         toast.error(message);
         return;
       }
