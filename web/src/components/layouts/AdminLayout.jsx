@@ -1,11 +1,13 @@
-import { Suspense } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { Inbox, LogOut, MessageSquareText } from "lucide-react";
 import clsx from "clsx";
 import Logo from "../Logo";
 import { Spinner } from "../Spinner";
+import UnreadBadge from "../UnreadBadge";
+import { useInboxTickets } from "../../hooks/useInboxTickets";
 import { useAuth } from "../../hooks/useAuth";
-import { ROLE_LABELS } from "../../constants";
+import { APP_NAME, ROLE_LABELS } from "../../constants";
 
 function NavItem({ to, icon: Icon, label, badge }) {
   return (
@@ -26,19 +28,46 @@ function NavItem({ to, icon: Icon, label, badge }) {
   );
 }
 
-/** Full-width shell for agents and admins. */
-export default function AdminLayout({ inboxBadge }) {
+/**
+ * Full-width shell for agents and admins. Owns the single live inbox listener so the nav badge
+ * and the browser tab title stay current on every staff page; pages read it with
+ * useOutletContext().
+ */
+export default function AdminLayout() {
   const { profile, role, signOut } = useAuth();
+  const inbox = useInboxTickets();
+  const unreadTotal = useMemo(
+    () =>
+      inbox.tickets.reduce(
+        (sum, ticket) => (ticket.status === "resolved" ? sum : sum + (ticket.unreadStaff || 0)),
+        0,
+      ),
+    [inbox.tickets],
+  );
+
+  useEffect(() => {
+    document.title = unreadTotal > 0 ? `(${unreadTotal}) ${APP_NAME}` : APP_NAME;
+    return () => {
+      document.title = APP_NAME;
+    };
+  }, [unreadTotal]);
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white">
+    // Fixed-height column: the header stays put and each page fills exactly the rest, so the
+    // inbox panes and the chat composer never push the page past the viewport.
+    <div className="flex h-dvh flex-col">
+      <header className="z-10 shrink-0 border-b border-slate-200 bg-white">
         <div className="flex h-16 items-center gap-2 px-3 sm:gap-4 sm:px-6">
           <Link to="/admin/inbox" aria-label="CarePal Support inbox" className="rounded-lg">
             <Logo compact />
           </Link>
           <nav aria-label="Main" className="flex items-center gap-1">
-            <NavItem to="/admin/inbox" icon={Inbox} label="Inbox" badge={inboxBadge} />
+            <NavItem
+              to="/admin/inbox"
+              icon={Inbox}
+              label="Inbox"
+              badge={<UnreadBadge count={unreadTotal} />}
+            />
             <NavItem to="/admin/quick-replies" icon={MessageSquareText} label="Quick replies" />
           </nav>
           <div className="ml-auto flex items-center gap-2 sm:gap-3">
@@ -59,7 +88,7 @@ export default function AdminLayout({ inboxBadge }) {
           </div>
         </div>
       </header>
-      <main className="flex flex-1 flex-col">
+      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         <Suspense
           fallback={
             <div className="flex flex-1 items-center justify-center p-8">
@@ -67,7 +96,7 @@ export default function AdminLayout({ inboxBadge }) {
             </div>
           }
         >
-          <Outlet />
+          <Outlet context={inbox} />
         </Suspense>
       </main>
     </div>

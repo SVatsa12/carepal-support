@@ -9,6 +9,7 @@ import {
 import { db } from "../firebase";
 import { MESSAGE_MAX, PREVIEW_MAX } from "../constants";
 import { truncate } from "../utils/text";
+import { systemMessage } from "./tickets";
 
 /** Send/read failure with a `code` for logic and a `message` that is safe to show the user. */
 export class MessageError extends Error {
@@ -26,7 +27,10 @@ const UNREAD_FIELD = { member: "unreadMember", staff: "unreadStaff" };
  * - increments the other side's unread counter;
  * - starts the wait clock only when the other side wasn't already being waited on, so
  *   waitingSince stays at the OLDEST unanswered message;
- * - on a resolved ticket (staff only) the wait fields stay null.
+ * - on a resolved ticket (staff only) the wait fields stay null;
+ * - a staff reply on a "pending" ticket also moves it to "in_progress" and adds the system
+ *   message "Status changed to In progress", in this same transaction, so the status can
+ *   never disagree with the fact that someone has replied.
  * Returns the new message id.
  */
 export async function sendMessage({ ticketId, text, sender }) {
@@ -37,7 +41,11 @@ export async function sendMessage({ ticketId, text, sender }) {
   }
 
   const ticketRef = doc(db, "tickets", ticketId);
-  const messageRef = doc(collection(db, "tickets", ticketId, "messages"));
+  const messages = collection(db, "tickets", ticketId, "messages");
+  // Both messages get the same server createdAt; Firestore then orders by document id, so the
+  // smaller id goes to the system message to show it just above the reply.
+  const [systemId, replyId] = [doc(messages).id, doc(messages).id].sort();
+  const messageRef = doc(messages, replyId);
   const otherSide = sender.role === "member" ? "staff" : "member";
 
   await runTransaction(db, async (transaction) => {
@@ -73,6 +81,13 @@ export async function sendMessage({ ticketId, text, sender }) {
     if (!resolved && ticket.awaitingReplyFrom !== otherSide) {
       update.awaitingReplyFrom = otherSide;
       update.waitingSince = serverTimestamp();
+    }
+    if (sender.role === "staff" && ticket.status === "pending") {
+      update.status = "in_progress";
+      transaction.set(
+        doc(messages, systemId),
+        systemMessage(sender, "Status changed to In progress"),
+      );
     }
     transaction.update(ticketRef, update);
   });
