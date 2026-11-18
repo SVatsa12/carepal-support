@@ -34,6 +34,28 @@ export function formatRelative(value, now = Date.now()) {
   return isSameYear(date, now) ? format(date, "d MMM") : format(date, "d MMM yyyy");
 }
 
+/** Clock time for a chat bubble: "4:10 PM". */
+export function formatClock(value) {
+  const date = toDate(value);
+  return date ? format(date, "h:mm a") : "";
+}
+
+/** Chat date divider: "Today", "Yesterday", "12 Nov", "12 Nov 2025". */
+export function dayLabel(value, now = Date.now()) {
+  const date = toDate(value);
+  if (!date) return "";
+  const daysAgo = differenceInCalendarDays(now, date);
+  if (daysAgo === 0) return "Today";
+  if (daysAgo === 1) return "Yesterday";
+  return isSameYear(date, now) ? format(date, "d MMM") : format(date, "d MMM yyyy");
+}
+
+/** Local calendar-day key used to group messages ("2026-11-18"). */
+export function dayKey(value) {
+  const date = toDate(value);
+  return date ? format(date, "yyyy-MM-dd") : "";
+}
+
 /** Compact wait duration: "45s", "12m", "1h 12m", "2d 3h". Negative input counts as 0. */
 export function formatWait(ms) {
   const safe = Math.max(0, ms);

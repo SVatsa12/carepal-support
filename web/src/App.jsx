@@ -38,8 +38,16 @@ export default function App() {
             <Route index element={<Navigate to="tickets" replace />} />
             <Route path="tickets" element={<MyTickets />} />
             <Route path="tickets/new" element={<NewTicket />} />
-            <Route path="tickets/:ticketId" element={<TicketChat />} />
           </Route>
+          {/* The chat is full-height with its own header, so it sits outside MemberLayout. */}
+          <Route
+            path="/app/tickets/:ticketId"
+            element={
+              <ProtectedRoute allow={MEMBER_ONLY}>
+                <TicketChat />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/admin"
