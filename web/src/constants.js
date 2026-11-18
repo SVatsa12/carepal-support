@@ -69,6 +69,13 @@ export const ROLES = {
 };
 
 export const STAFF_ROLES = [ROLES.AGENT, ROLES.ADMIN];
+export const ALL_ROLES = Object.values(ROLES);
+
+export const ROLE_LABELS = {
+  [ROLES.MEMBER]: "Family member",
+  [ROLES.AGENT]: "Agent",
+  [ROLES.ADMIN]: "Admin",
+};
 
 // Wait-timer colour thresholds, in minutes: green below the first, amber below the second, red after.
 export const SLA_MINUTES = {
