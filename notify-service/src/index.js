@@ -4,6 +4,7 @@ import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
 import config from "./config.js";
 import { HttpError } from "./lib/httpError.js";
+import { mailTransportName } from "./lib/mailer.js";
 import notifyRouter from "./routes/notify.js";
 
 const app = express();
@@ -50,7 +51,7 @@ app.use((error, _req, res, _next) => {
 app.listen(config.port, () => {
   console.log(
     `notify-service listening on http://localhost:${config.port} ` +
-      `(email ${config.email.enabled ? "ON" : "OFF — previews only"}, ` +
+      `(email: ${mailTransportName}, ` +
       `throttle ${config.throttleMinutes} min)`,
   );
 });

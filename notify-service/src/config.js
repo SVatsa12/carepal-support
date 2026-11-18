@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { parseMailbox } from "./lib/mailbox.js";
 
 dotenv.config({ quiet: true });
 
@@ -55,6 +56,8 @@ const config = {
     user: env.SMTP_USER || "",
     pass: env.SMTP_PASS || "",
     from: env.MAIL_FROM || "",
+    // Brevo's HTTPS API, used instead of SMTP when set (Render's free tier blocks SMTP ports).
+    brevoApiKey: (env.BREVO_API_KEY || "").trim(),
   },
 };
 
@@ -67,8 +70,12 @@ if (config.allowedOrigins.length === 0) {
   problems.push("ALLOWED_ORIGINS needs at least one origin, e.g. http://localhost:5173.");
 }
 if (emailEnabled) {
-  for (const key of ["SMTP_USER", "SMTP_PASS", "MAIL_FROM"]) {
+  const required = config.email.brevoApiKey ? ["MAIL_FROM"] : ["SMTP_USER", "SMTP_PASS", "MAIL_FROM"];
+  for (const key of required) {
     if (!env[key]) problems.push(`${key} is required when EMAIL_ENABLED=true.`);
+  }
+  if (env.MAIL_FROM && !parseMailbox(env.MAIL_FROM)) {
+    problems.push('MAIL_FROM must look like "CarePal Support <you@gmail.com>" or you@gmail.com.');
   }
 }
 

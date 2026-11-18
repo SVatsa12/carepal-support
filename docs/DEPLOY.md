@@ -35,8 +35,10 @@ Render deploys from a Git host, so push this repo to GitHub first.
 2. Fill the secret values Render asks for:
    - `FIREBASE_SERVICE_ACCOUNT_BASE64`: the service account JSON as one base64 line,
      e.g. `base64 -w0 scripts/service-account.json` (macOS: `base64 -i … | tr -d '\n'`).
-   - `SMTP_USER`, `SMTP_PASS` (a Gmail **app password**), `MAIL_FROM`
-     (e.g. `CarePal Support <you@gmail.com>`), `SUPPORT_INBOX_EMAIL`.
+   - `BREVO_API_KEY`, `MAIL_FROM` (e.g. `CarePal Support <you@gmail.com>`) and
+     `SUPPORT_INBOX_EMAIL`: see *Email on Render* below.
+   - `SMTP_USER` / `SMTP_PASS` are only used when `BREVO_API_KEY` is empty (local dev with a
+     Gmail app password); on Render any placeholder will do.
 3. When it's live, open `https://<service>.onrender.com/health` → `{"ok":true}`.
 4. Put the URL in `web/.env.production` as `VITE_NOTIFY_URL=https://<service>.onrender.com`,
    then rebuild and redeploy Hosting (step 1).
@@ -44,9 +46,28 @@ Render deploys from a Git host, so push this repo to GitHub first.
 `ALLOWED_ORIGINS`, `APP_URL` and `TRUST_PROXY=1` are already set in `render.yaml` for the
 Hosting URLs.
 
-**Free instances sleep** after ~15 minutes idle. The first email after a quiet spell can take
-30–50 s while the service wakes. The web client calls it fire-and-forget with a 5 s timeout,
-so chat is never slowed down; at worst that one email is skipped.
+### Email on Render: Brevo, not SMTP
+
+Since 26 Sept 2025 Render's **free** web services block outbound traffic to SMTP ports 25, 465
+and 587, so Gmail SMTP times out there. The service therefore sends through
+[Brevo](https://www.brevo.com)'s transactional email API over HTTPS whenever `BREVO_API_KEY`
+is set, and falls back to SMTP (nodemailer) when it isn't, which suits local dev.
+
+1. Create a free Brevo account (300 emails/day).
+2. **Senders, domains & dedicated IPs → Senders → Add a sender** with the address you use in
+   `MAIL_FROM`, and confirm Brevo's verification email.
+3. **SMTP & API → API keys → Generate a new API key**, then paste it into `BREVO_API_KEY` on
+   Render.
+4. If an email doesn't show up, check **Transactional → Logs** in Brevo and the Render logs
+   (rejected sends are logged as `Brevo rejected the email (HTTP …)`).
+
+A Gmail address sent through a third party often lands in **spam** at first; mark it
+"Not spam" once.
+
+**Free instances sleep** after ~15 minutes idle. The first request after a quiet spell can
+take 30–50 s while the service wakes. The web client calls it fire-and-forget with a 5 s
+timeout, so chat is never slowed down; the browser stops waiting, but the service still
+finishes sending the email once it's awake.
 
 ## 3. Cloudinary upload preset
 
