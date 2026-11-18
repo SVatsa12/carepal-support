@@ -1,0 +1,41 @@
+# Render Blueprint for the email notify-service (free web service).
+# Render → New → Blueprint → pick this repo. Values marked sync: false are asked for in the
+# dashboard and never stored in git.
+services:
+  - type: web
+    name: carepal-notify
+    runtime: node
+    plan: free
+    rootDir: notify-service
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Render sits behind one proxy; lets rate limiting see the real client IP.
+      - key: TRUST_PROXY
+        value: "1"
+      - key: ALLOWED_ORIGINS
+        value: https://carepal-74c9f.web.app,https://carepal-74c9f.firebaseapp.com
+      - key: APP_URL
+        value: https://carepal-74c9f.web.app
+      - key: FIREBASE_SERVICE_ACCOUNT_BASE64
+        sync: false
+      - key: EMAIL_ENABLED
+        value: "true"
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "465"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: SUPPORT_INBOX_EMAIL
+        sync: false
+      - key: THROTTLE_MINUTES
+        value: "10"
