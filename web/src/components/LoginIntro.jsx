@@ -1,4 +1,4 @@
-import { Clock, HeartHandshake, Info, ListChecks, MessagesSquare } from "lucide-react";
+import { Clock, HeartHandshake, ListChecks, MessagesSquare } from "lucide-react";
 import { APP_NAME } from "../constants";
 
 const BENEFITS = [
@@ -39,20 +39,6 @@ export default function LoginIntro() {
           ))}
         </ul>
 
-        <div className="mt-10 rounded-xl border border-white/20 bg-white/10 p-4">
-          <h3 className="flex items-center gap-2 text-sm font-semibold">
-            <Info aria-hidden="true" className="h-4 w-4" />
-            For reviewers
-          </h3>
-          <p className="mt-1 text-sm leading-relaxed text-brand-50">
-            Open two windows (one as a family member, one as a support agent) to see messages,
-            unread badges and timers update live.
-          </p>
-        </div>
-
-        <p className="mt-6 text-xs text-brand-100">
-          All families, nurses and tickets here are synthetic. No real patient data is used.
-        </p>
       </div>
     </section>
   );
