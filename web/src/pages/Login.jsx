@@ -128,7 +128,7 @@ export default function Login() {
               ))}
               <p className="text-center text-xs text-slate-500">
                 {demoConfigured
-                  ? "This is a demo. All families, nurses and tickets are synthetic."
+                  ? "Demo data only. All families, nurses and tickets are invented, and no real patient information is used."
                   : "Demo sign-in isn't configured. Set the VITE_DEMO_* values in web/.env."}
               </p>
             </div>

@@ -39,6 +39,15 @@ export default function LoginIntro() {
           ))}
         </ul>
 
+        <div className="mt-10 rounded-xl bg-brand-900/60 border border-white/10 p-6">
+          <h3 className="text-sm font-semibold text-white uppercase tracking-wide">
+            Try it yourself
+          </h3>
+          <p className="mt-3 text-sm text-brand-100 leading-relaxed">
+            {"Open this site in two windows. Sign in as a family member in one and as a support agent in the other, then send a message from either side. You'll see messages, unread badges and wait timers update live, without refreshing."}
+          </p>
+        </div>
+
       </div>
     </section>
   );

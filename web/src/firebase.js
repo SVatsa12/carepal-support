@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, setPersistence, browserSessionPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const env = import.meta.env;
@@ -31,4 +31,5 @@ if (missingKeys.length > 0 && env.DEV) {
 
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+setPersistence(auth, browserSessionPersistence);
 export const db = getFirestore(app);
